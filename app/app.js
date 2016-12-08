@@ -1,0 +1,38 @@
+;
+(function(angular){
+  var doubanApp=angular.module("douban",[
+    "douban.movieList",
+    "douban.movieDetail",
+    "ngRoute"
+    ])
+  doubanApp.config(["$routeProvider",function($routeProvider){
+    $$routeProvider.when("/subject/:sub_id",{
+      templateUrl:"movieDetail/view.html",
+      controller:"MovieDetailController"
+    })
+    .when("/:cat/:page?",{
+      templateUrl:"movieList/view.html",
+      controller:"MovieListController"
+    })
+  }])
+  .controller("SearchController",["$scope","$route",function($scope,$route){
+    $scope.search_text='';
+    $scope.search=function(search_text){
+      $route.updateParams({
+        cat:"search",
+        q:search_text,
+        page:1
+      })
+    }
+  }])
+  .controller("SidebarController",["$scope","$location",function($scope,$location){
+    $scope.$location=$location;
+    $scope.$watch("$location.url()",function(newVal,oldVal){
+      angular.element(".nav-sidebar").find("a").each(function(index,a){
+        angular.element(a)
+        .closest("li").addClass("active")
+        .siblings().removeClass("active");
+      })
+    })
+  }])
+}(angular))
